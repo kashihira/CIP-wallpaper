@@ -20,6 +20,8 @@ TEMP_FILE = 'qr_temp.jpg'
 OUTPUT_FILE = 'wallpaper.jpg'
 DEFAULT_WALLPAPER = 'finalProject.png'
 DEBUG_MODE = False
+# Coordination offset for QR-Code
+POS_OFFSET = 50
 
 
 def main():
@@ -71,13 +73,13 @@ def input_position():
     """
     input the position option for pasted QR code
     """
-    option = input('Please select the position (1:left-top, 2:right-top, 3:left-bottom, 4:right-bottom) for QR code: ')
+    option = input('Please select the position (1:left-top, 2:right-top, 3:left-bottom, 4:right-bottom, 5:left-middle, 6:right-middle) for QR code: ')
     if option == '':
         pos = 1
         print('    Use the default position, option 1: left-top on background.')
     else:
         pos = int(option)
-    if pos > 4 or pos < 1:
+    if pos > 6 or pos < 1:
         pos = 1
     return pos
 
@@ -126,22 +128,29 @@ def paste_qrcode(pos, qr_img, back_img):
         for y in range(qr_height):
             pixel = qr_img.get_pixel(x, y)
             if pos == 1:
-                x1 = x
-                y1 = y
+                x1 = x + POS_OFFSET
+                y1 = y + POS_OFFSET
                 back_img.set_pixel(x1, y1, pixel)
             elif pos == 2:
-                x1 = x + dw
-                y1 = y
+                x1 = x + dw - POS_OFFSET
+                y1 = y + POS_OFFSET
                 back_img.set_pixel(x1, y1, pixel)
             elif pos == 3:
-                x1 = x
-                y1 = y + dh
+                x1 = x + POS_OFFSET
+                y1 = y + dh -POS_OFFSET
                 back_img.set_pixel(x1, y1, pixel)
             elif pos == 4:
-                x1 = x + dw
-                y1 = y + dh
+                x1 = x + dw - POS_OFFSET
+                y1 = y + dh - POS_OFFSET
                 back_img.set_pixel(x1, y1, pixel)
-
+            elif pos == 5:
+                x1 = x + POS_OFFSET
+                y1 = y + int(dh/2)
+                back_img.set_pixel(x1, y1, pixel)
+            elif pos == 6:
+                x1 = x + dw - POS_OFFSET
+                y1 = y + int(dh/2)
+                back_img.set_pixel(x1, y1, pixel)
 
 def init():
     """delete the temporary file and old output file if exists"""
